@@ -6,7 +6,7 @@ import { AuthService } from './auth.service';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  //SignUp (რეგისტრაცია)
+  // SignUp (რეგისტრაცია)
   @Post('/signup')
   async signUp(@Body() authCredentialsDto: AuthCredentialsDto): Promise<void> {
     try {

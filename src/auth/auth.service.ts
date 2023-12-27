@@ -69,7 +69,7 @@ export class AuthService {
       return { accessToken };
     } else {
       throw new UnauthorizedException(
-        'შეამოწმეთ თქვენ მიერ შეყვანილი მონაცემები',
+        'შეამოწმეთ თქვენს მიერ შეყვანილი მონაცემები',
       );
     }
   }
