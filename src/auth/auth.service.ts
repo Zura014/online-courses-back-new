@@ -2,13 +2,15 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import * as bcrypt from 'bcrypt';
+import { JwtPayLoad } from './jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +19,8 @@ export class AuthService {
     private readonly userRepository: Repository<UserEntity>,
     private jwtService: JwtService,
   ) {}
+
+  //SignUp (რეგისტრაცია)
 
   async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
     const { email, password } = authCredentialsDto;
@@ -29,15 +33,44 @@ export class AuthService {
       email,
       password: hashedPassword,
     });
-
     try {
       await this.userRepository.save(user);
     } catch (error) {
-      if (error.code === '23505') {
-        throw new ConflictException('შეყვანილი ელფოსტა უკვე გამოყენებულია');
-      } else {
-        throw new InternalServerErrorException(console.log(error.message));
+      if (error instanceof QueryFailedError) {
+        const errorMessage = error.message;
+        if (errorMessage.includes('Duplicate entry')) {
+          const match = errorMessage.match(/Duplicate entry '(.+)' for key/);
+          const duplicateEmail = match ? match[1] : null;
+
+          if (duplicateEmail) {
+            throw new ConflictException(`შეყვანილი ელფოსტა უკვე გამოყენებულია`);
+          }
+        }
       }
+      throw error;
+    }
+  }
+
+  //SignIn (ავტორიზაცია)
+
+  async signIn(
+    authCredentialsDto: AuthCredentialsDto,
+  ): Promise<{ accessToken: string }> {
+    const { email, password } = authCredentialsDto;
+    const user = await this.userRepository.findOne({
+      where: { email },
+    });
+    if (user && (await bcrypt.compare(password, user.password))) {
+      const payload: JwtPayLoad = {
+        email,
+        id: user.id,
+      };
+      const accessToken: string = await this.jwtService.sign(payload);
+      return { accessToken };
+    } else {
+      throw new UnauthorizedException(
+        'შეამოწმეთ თქვენ მიერ შეყვანილი მონაცემები',
+      );
     }
   }
 }
