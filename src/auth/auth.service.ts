@@ -43,7 +43,9 @@ export class AuthService {
           const duplicateEmail = match ? match[1] : null;
 
           if (duplicateEmail) {
-            throw new ConflictException(`შეყვანილი ელფოსტა უკვე გამოყენებულია`);
+            throw new UnauthorizedException(
+              `შეყვანილი ელფოსტა უკვე გამოყენებულია`,
+            );
           }
         }
       }
