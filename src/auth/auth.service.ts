@@ -23,7 +23,7 @@ export class AuthService {
   //SignUp (რეგისტრაცია)
 
   async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
-    const { email, password } = authCredentialsDto;
+    const { email, password, username } = authCredentialsDto;
 
     //hash
     const salt = await bcrypt.genSalt();
@@ -31,6 +31,7 @@ export class AuthService {
 
     const user = this.userRepository.create({
       email,
+      username,
       password: hashedPassword,
     });
     try {
@@ -41,10 +42,15 @@ export class AuthService {
         if (errorMessage.includes('Duplicate entry')) {
           const match = errorMessage.match(/Duplicate entry '(.+)' for key/);
           const duplicateEmail = match ? match[1] : null;
+          const duplicateUsername = match ? match[2] : null;
 
           if (duplicateEmail) {
             throw new UnauthorizedException(
               `შეყვანილი ელფოსტა უკვე გამოყენებულია`,
+            );
+          } else if (duplicateUsername) {
+            throw new UnauthorizedException(
+              `შეყვანილი სახელი უკვე გამოყენებულია`,
             );
           }
         }

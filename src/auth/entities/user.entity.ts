@@ -5,15 +5,18 @@ export class UserEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // @Column()
-  // first_name?: string;
-
-  // @Column()
-  // last_name?: string;
+  @Column({ unique: true })
+  username: string;
 
   @Column({ unique: true })
   email: string;
 
   @Column()
   password: string;
+
+  @Column('enum', {
+    enum: ['active', 'offline'],
+    default: 'active',
+  })
+  status: string;
 }
