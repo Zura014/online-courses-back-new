@@ -11,6 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtPayLoad } from './jwt-payload.interface';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -61,10 +62,8 @@ export class AuthService {
 
   //SignIn (ავტორიზაცია)
 
-  async signIn(
-    authCredentialsDto: AuthCredentialsDto,
-  ): Promise<{ accessToken: string }> {
-    const { email, password } = authCredentialsDto;
+  async signIn(loginDto: LoginDto): Promise<{ accessToken: string }> {
+    const { email, password } = loginDto;
     const user = await this.userRepository.findOne({
       where: { email },
     });
