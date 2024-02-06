@@ -2,6 +2,8 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { UserEntity } from './entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -22,6 +24,18 @@ export class AuthController {
   async signIn(@Body() loginDto: LoginDto): Promise<{ accessToken: string }> {
     try {
       return await this.authService.signIn(loginDto);
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  //Forgot Password (პაროლის აღდგენა)
+  @Post('/forgot-password')
+  async forgotPassword(
+    @Body() forgotPasswordDto: ForgotPasswordDto,
+  ): Promise<UserEntity> {
+    try {
+      return await this.authService.forgotPassword(forgotPasswordDto);
     } catch (error) {
       console.log(error.message);
     }

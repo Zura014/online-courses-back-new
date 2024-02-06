@@ -12,6 +12,7 @@ import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtPayLoad } from './jwt-payload.interface';
 import { LoginDto } from './dto/login.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -78,6 +79,23 @@ export class AuthService {
       throw new UnauthorizedException(
         'შეამოწმეთ თქვენს მიერ შეყვანილი მონაცემები',
       );
+    }
+  }
+
+  async forgotPassword(
+    forgotPasswordDto: ForgotPasswordDto,
+  ): Promise<UserEntity> {
+    const { email } = forgotPasswordDto;
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (user) {
+      try {
+        this.userRepository.update(user, {
+          password: forgotPasswordDto.new_password,
+        });
+        return user;
+      } catch (error) {
+        console.log(error.message);
+      }
     }
   }
 }
