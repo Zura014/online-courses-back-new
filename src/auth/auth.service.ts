@@ -85,17 +85,22 @@ export class AuthService {
   async forgotPassword(
     forgotPasswordDto: ForgotPasswordDto,
   ): Promise<UserEntity> {
-    const { email } = forgotPasswordDto;
+    const { email, new_password } = forgotPasswordDto;
     const user = await this.userRepository.findOne({ where: { email } });
+
     if (user) {
+      const salt = await bcrypt.genSalt();
+      const newHashedPassword = await bcrypt.hash(new_password, salt);
       try {
-        this.userRepository.update(user, {
-          password: forgotPasswordDto.new_password,
+        const updatedUser = await this.userRepository.update(user, {
+          password: newHashedPassword,
         });
-        return user;
+        return updatedUser.raw;
       } catch (error) {
         console.log(error.message);
       }
+    } else {
+      throw new UnauthorizedException('შეყვანილი ელფოსტა არასწორია');
     }
   }
 }
