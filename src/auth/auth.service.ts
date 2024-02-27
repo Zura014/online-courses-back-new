@@ -116,7 +116,7 @@ export class AuthService {
   ): Promise<UserEntity> {
     const { username, description, imageUrl } = editUserDto;
 
-    if (username == null) {
+    if (username == '') {
       user.username = user.username || user.username;
     } else if (username.length > 4) {
       user.username = username || user.username;
