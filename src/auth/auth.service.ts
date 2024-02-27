@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   InternalServerErrorException,
@@ -13,6 +14,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtPayLoad } from './jwt-payload.interface';
 import { LoginDto } from './dto/login.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { EditUserDto } from './dto/edit-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -39,25 +41,27 @@ export class AuthService {
     try {
       await this.userRepository.save(user);
     } catch (error) {
-      if (error instanceof QueryFailedError) {
-        const errorMessage = error.message;
-        if (errorMessage.includes('Duplicate entry')) {
-          const match = errorMessage.match(/Duplicate entry '(.+)' for key/);
-          const duplicateEmail = match ? match[1] : null;
-          const duplicateUsername = match ? match[2] : null;
-
-          if (duplicateEmail) {
-            throw new UnauthorizedException(
-              `შეყვანილი ელფოსტა უკვე გამოყენებულია`,
+      if (error.code === 'ER_DUP_ENTRY') {
+        const { username, email } = authCredentialsDto;
+        const existingUser = await this.userRepository.findOne({
+          where: [{ username }, { email }],
+        });
+        if (existingUser) {
+          if (
+            existingUser.username === username &&
+            existingUser.email === email
+          ) {
+            throw new ConflictException(
+              'Both username and email already exist.',
             );
-          } else if (duplicateUsername) {
-            throw new UnauthorizedException(
-              `შეყვანილი სახელი უკვე გამოყენებულია`,
-            );
+          } else if (existingUser.username === username) {
+            throw new ConflictException('Username is already in use.');
+          } else if (existingUser.email === email) {
+            throw new ConflictException('Email is already in use.');
           }
         }
       }
-      throw error;
+      throw error; // Rethrow other errors
     }
   }
 
@@ -101,6 +105,34 @@ export class AuthService {
       }
     } else {
       throw new UnauthorizedException('შეყვანილი ელფოსტა არასწორია');
+    }
+  }
+
+  // Edit User (მომხმარებლის რედაქტირება)
+
+  async editUser(
+    editUserDto: EditUserDto,
+    user: UserEntity,
+  ): Promise<UserEntity> {
+    const { username, description, imageUrl } = editUserDto;
+
+    if (username == null) {
+      user.username = user.username || user.username;
+    } else if (username.length > 4) {
+      user.username = username || user.username;
+    } else if (username.length < 4) {
+      throw new BadRequestException('სახელი უნდა შეიცავდეს მინიმუმ 4 ელემენტს');
+    }
+
+    user.description = description || user.description;
+    user.imageUrl = imageUrl || user.imageUrl;
+
+    await this.userRepository.save(user);
+
+    try {
+      return user;
+    } catch (error) {
+      console.log(error.message);
     }
   }
 }

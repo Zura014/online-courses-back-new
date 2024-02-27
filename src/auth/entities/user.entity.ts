@@ -14,6 +14,12 @@ export class UserEntity {
   @Column()
   password: string;
 
+  @Column({ nullable: true })
+  description?: string;
+
+  @Column({ nullable: true })
+  imageUrl?: string;
+
   @Column('enum', {
     enum: ['active', 'offline'],
     default: 'active',
