@@ -135,4 +135,12 @@ export class AuthService {
       console.log(error.message);
     }
   }
+
+  async getUser(user: UserEntity): Promise<UserEntity> {
+    try {
+      return user;
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
 }

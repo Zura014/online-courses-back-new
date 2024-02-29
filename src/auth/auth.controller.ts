@@ -1,4 +1,12 @@
-import { Body, Controller, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
@@ -43,7 +51,11 @@ export class AuthController {
       console.log(error.message);
     }
   }
+}
 
+@Controller('users')
+export class UserController {
+  constructor(private authService: AuthService) {}
   // Edit User (მომხმარებლის რედაქტირება)
   @UseGuards(AuthGuard())
   @Patch('/edit-user')
@@ -53,6 +65,16 @@ export class AuthController {
   ): Promise<UserEntity> {
     try {
       return await this.authService.editUser(editUserDto, user);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+  @UseGuards(AuthGuard())
+  @Get('/profile')
+  async getUser(@GetUser() user: UserEntity): Promise<UserEntity> {
+    try {
+      return await this.authService.getUser(user);
     } catch (error) {
       console.error(error.message);
     }
