@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { CourseEntity } from 'src/courses/entities/course.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class UserEntity {
@@ -25,4 +26,7 @@ export class UserEntity {
     default: 'active',
   })
   status: string;
+
+  @OneToMany((_type) => CourseEntity, (course) => course.user)
+  course: CourseEntity[];
 }

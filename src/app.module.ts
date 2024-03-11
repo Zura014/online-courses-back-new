@@ -1,3 +1,5 @@
+import { CourseController } from './courses/course.controller';
+import { CourseModule } from './courses/course.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { Module } from '@nestjs/common';
@@ -26,6 +28,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       }),
     }),
     AuthModule,
+    CourseModule,
   ],
   controllers: [],
   providers: [],
