@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Delete,
   Param,
   Patch,
   Post,
@@ -75,6 +76,17 @@ export class UserController {
   async getUser(@GetUser() user: UserEntity): Promise<UserEntity> {
     try {
       return await this.authService.getUser(user);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+  @UseGuards(AuthGuard())
+  @Delete('/profile')
+  async deleteUser(@GetUser() user: UserEntity): Promise<void> {
+    const userId = user.id;
+
+    try {
+      return await this.authService.deleteUser(userId);
     } catch (error) {
       console.error(error.message);
     }

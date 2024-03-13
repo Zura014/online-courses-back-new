@@ -143,4 +143,14 @@ export class AuthService {
       console.log(error.message);
     }
   }
+
+  async deleteUser(userId: number): Promise<void> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+
+    try {
+      await this.userRepository.remove(user);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
 }
