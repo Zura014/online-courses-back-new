@@ -15,6 +15,7 @@ import { JwtPayLoad } from './jwt-payload.interface';
 import { LoginDto } from './dto/login.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { EditUserDto } from './dto/edit-user.dto';
+import { CourseEntity } from 'src/courses/entities/course.entity';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +23,8 @@ export class AuthService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     private jwtService: JwtService,
+    @InjectRepository(CourseEntity)
+    private readonly courseRepository: Repository<CourseEntity>,
   ) {}
 
   //SignUp (რეგისტრაცია)
@@ -136,7 +139,7 @@ export class AuthService {
     }
   }
 
-  async getUser(user: UserEntity): Promise<UserEntity> {
+  async getProfile(user: UserEntity): Promise<UserEntity> {
     try {
       return user;
     } catch (error) {
@@ -145,9 +148,13 @@ export class AuthService {
   }
 
   async deleteUser(userId: number): Promise<void> {
-    const user = await this.userRepository.findOne({ where: { id: userId } });
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: { course: true },
+    });
 
     try {
+      await this.courseRepository.remove(user.course);
       await this.userRepository.remove(user);
     } catch (error) {
       console.error(error.message);

@@ -16,6 +16,7 @@ import { UserEntity } from './entities/user.entity';
 import { EditUserDto } from './dto/edit-user.dto';
 import { GetUser } from './decorators/get-user.decorator';
 import { AuthGuard } from '@nestjs/passport';
+import { GetUserDto } from './dto/get-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -73,9 +74,19 @@ export class UserController {
 
   @UseGuards(AuthGuard())
   @Get('/profile')
-  async getUser(@GetUser() user: UserEntity): Promise<UserEntity> {
+  async getProfile(@GetUser() user: UserEntity): Promise<GetUserDto> {
+    const userData = await this.authService.getProfile(user);
+
+    const userDto: GetUserDto = {
+      id: userData.id,
+      username: userData.username,
+      email: userData.email,
+      description: userData.description,
+      imageUrl: userData.imageUrl,
+      status: userData.status,
+    };
     try {
-      return await this.authService.getUser(user);
+      return userDto;
     } catch (error) {
       console.error(error.message);
     }
