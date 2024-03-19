@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { NotFoundException } from '@nestjs/common/exceptions';
+import {
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common/exceptions';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CourseEntity } from './entities/course.entity';
 import { Repository } from 'typeorm';
 import { UserEntity } from 'src/auth/entities/user.entity';
 import { CreateCourseDto } from './dto/create-course.dto';
+import { EditCourseDto } from './dto/edit-course.dto';
 
 @Injectable()
 export class CourseService {
@@ -49,10 +53,37 @@ export class CourseService {
 
   async deleteCourse(id: number, user: UserEntity): Promise<void> {
     const course = await this.courseRepository.findOne({ where: { id: id } });
+    if (!course) {
+      throw new BadRequestException('კურსი ვერ მოიძებნა');
+    }
     try {
       await this.courseRepository.remove(course);
     } catch (error) {
       console.error(error.message);
+    }
+  }
+
+  async editCourse(
+    id: number,
+    editCourseDto: EditCourseDto,
+    user: UserEntity,
+  ): Promise<CourseEntity> {
+    const { course_title, description, price } = editCourseDto;
+
+    const course = await this.courseRepository.findOne({ where: { id: id } });
+
+    if (!course) {
+      throw new BadRequestException('კურსი ვერ მოიძებნა');
+    }
+
+    course.course_title = course_title || course.course_title;
+    course.description = description || course.description;
+    course.price = price || course.price;
+
+    try {
+      return await this.courseRepository.save(course);
+    } catch (error) {
+      console.error(error.message)
     }
   }
 }

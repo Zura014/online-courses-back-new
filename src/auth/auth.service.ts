@@ -153,6 +153,10 @@ export class AuthService {
       relations: { course: true },
     });
 
+    if (!user) {
+      throw new BadRequestException('მომხმარებელი ვერ მოიძებნა');
+    }
+
     try {
       await this.courseRepository.remove(user.course);
       await this.userRepository.remove(user);

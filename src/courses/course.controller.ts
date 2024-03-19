@@ -15,6 +15,7 @@ import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UserEntity } from 'src/auth/entities/user.entity';
 import { CourseEntity } from './entities/course.entity';
+import { EditCourseDto } from './dto/edit-course.dto';
 
 @Controller('courses')
 export class CourseController {
@@ -46,6 +47,7 @@ export class CourseController {
     }
   }
 
+  // Delete Course კურსის წაშლა
   @UseGuards(AuthGuard())
   @Delete('/delete/:id')
   async deteleCourse(
@@ -54,6 +56,21 @@ export class CourseController {
   ): Promise<void> {
     try {
       return await this.courseService.deleteCourse(id, user);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+  //Edit Course კურსის განახლება
+  @UseGuards(AuthGuard())
+  @Patch('/edit/:id')
+  async editCourse(
+    @Param('id') id: number,
+    @Body() editCourseDto: EditCourseDto,
+    @GetUser() user: UserEntity,
+  ): Promise<CourseEntity> {
+    try {
+      return await this.courseService.editCourse(id, editCourseDto, user);
     } catch (error) {
       console.error(error.message);
     }
