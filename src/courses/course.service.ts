@@ -26,6 +26,7 @@ export class CourseService {
       user,
       description: createCourseDto.description,
       price: createCourseDto.price,
+      imageUrl: createCourseDto.imageUrl,
     });
 
     try {
@@ -68,7 +69,7 @@ export class CourseService {
     editCourseDto: EditCourseDto,
     user: UserEntity,
   ): Promise<CourseEntity> {
-    const { course_title, description, price } = editCourseDto;
+    const { course_title, description, price, imageUrl } = editCourseDto;
 
     const course = await this.courseRepository.findOne({ where: { id: id } });
 
@@ -79,11 +80,12 @@ export class CourseService {
     course.course_title = course_title || course.course_title;
     course.description = description || course.description;
     course.price = price || course.price;
+    course.imageUrl = imageUrl || course.imageUrl;
 
     try {
       return await this.courseRepository.save(course);
     } catch (error) {
-      console.error(error.message)
+      console.error(error.message);
     }
   }
 }

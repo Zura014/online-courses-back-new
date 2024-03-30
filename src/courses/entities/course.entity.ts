@@ -19,4 +19,7 @@ export class CourseEntity {
 
   @Column()
   price: number;
+
+  @Column()
+  imageUrl: string;
 }
