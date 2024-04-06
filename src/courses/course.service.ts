@@ -43,7 +43,7 @@ export class CourseService {
       const [courses, totalCount] = await this.courseRepository.findAndCount({
         take: 9,
         skip: 9 * (page - 1),
-        select: ['id', 'course_title', 'description', 'price'],
+        select: ['id', 'course_title', 'description', 'price', 'imageUrl'],
         order: { id: 'DESC' },
       });
       return { courses, totalCount };
