@@ -11,7 +11,7 @@ export class CourseEntity {
   course_title: string;
 
   @ManyToOne((_type) => UserEntity, (user) => user.course)
-  @Exclude({ toPlainOnly: true })
+  // @Exclude({ toPlainOnly: true })
   user: UserEntity;
 
   @Column()

@@ -15,6 +15,8 @@ export class CourseService {
   constructor(
     @InjectRepository(CourseEntity)
     private readonly courseRepository: Repository<CourseEntity>,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
   ) {}
 
   async createCourse(
@@ -45,7 +47,9 @@ export class CourseService {
         skip: 9 * (page - 1),
         select: ['id', 'course_title', 'description', 'price', 'imageUrl'],
         order: { id: 'DESC' },
+        relations: ['user'],
       });
+
       return { courses, totalCount };
     } catch (error) {
       throw new NotFoundException('Courses not found');
