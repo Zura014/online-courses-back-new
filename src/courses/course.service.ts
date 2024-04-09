@@ -47,9 +47,10 @@ export class CourseService {
         skip: 9 * (page - 1),
         select: ['id', 'course_title', 'description', 'price', 'imageUrl'],
         order: { id: 'DESC' },
-        relations: ['user'],
+        relations: { user: true },
       });
 
+      return;
       return { courses, totalCount };
     } catch (error) {
       throw new NotFoundException('Courses not found');
@@ -59,7 +60,7 @@ export class CourseService {
   async deleteCourse(id: number, user: UserEntity): Promise<void> {
     const course = await this.courseRepository.findOne({ where: { id: id } });
     if (!course) {
-      throw new BadRequestException('კურსი ვერ მოიძებნა');
+      throw new BadRequestException('Course was not found');
     }
     try {
       await this.courseRepository.remove(course);
@@ -78,7 +79,7 @@ export class CourseService {
     const course = await this.courseRepository.findOne({ where: { id: id } });
 
     if (!course) {
-      throw new BadRequestException('კურსი ვერ მოიძებნა');
+      throw new BadRequestException('Course was not found');
     }
 
     course.course_title = course_title || course.course_title;

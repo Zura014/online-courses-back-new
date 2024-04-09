@@ -15,10 +15,14 @@ export class LoginDto {
 
   @IsString()
   @IsNotEmpty()
-  @MinLength(8, { message: 'პაროლი უნდა შეიცავდეს მინიმუმ 8 ელემენტს' })
-  @MaxLength(32, { message: 'პაროლი უნდა შეიცავდეს მაქსიმუმ 32 ელემენტს' })
+  @MinLength(8, {
+    message: 'The password must consist of at least 8 elements.',
+  })
+  @MaxLength(32, {
+    message: 'The password should contain a maximum of 32 elements.',
+  })
   @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: 'შეყვანილი პაროლი სუსტია',
+    message: 'The password is weak',
   })
   password: string;
 }

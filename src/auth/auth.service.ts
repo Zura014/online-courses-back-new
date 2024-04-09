@@ -84,7 +84,7 @@ export class AuthService {
       return { accessToken };
     } else {
       throw new UnauthorizedException(
-        'შეამოწმეთ თქვენს მიერ შეყვანილი მონაცემები',
+        'The entered data is incorrect. Please review and make sure all fields are entered correctly.',
       );
     }
   }
@@ -107,7 +107,7 @@ export class AuthService {
         console.log(error.message);
       }
     } else {
-      throw new UnauthorizedException('შეყვანილი ელფოსტა არასწორია');
+      throw new UnauthorizedException('Email is incorrect');
     }
   }
 
@@ -124,7 +124,9 @@ export class AuthService {
     } else if (username.length > 4) {
       user.username = username || user.username;
     } else if (username.length < 4) {
-      throw new BadRequestException('სახელი უნდა შეიცავდეს მინიმუმ 4 ელემენტს');
+      throw new BadRequestException(
+        'The name must consist of at least 4 elements.',
+      );
     }
 
     user.description = description || user.description;
@@ -154,7 +156,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new BadRequestException('მომხმარებელი ვერ მოიძებნა');
+      throw new BadRequestException(`Couldn't find User`);
     }
 
     try {
