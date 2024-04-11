@@ -92,4 +92,36 @@ export class CourseService {
       console.error(error.message);
     }
   }
+
+  async sortCoursesByPriceHighToLow(
+    page = 1,
+  ): Promise<{ courses: CourseEntity[]; totalCount: number }> {
+    try {
+      const [courses, totalCount] = await this.courseRepository.findAndCount({
+        take: 9,
+        skip: 9 * (page - 1),
+        select: ['id', 'course_title', 'description', 'price', 'imageUrl'],
+        order: { price: 'DESC' },
+      });
+      return { courses, totalCount };
+    } catch (error) {
+      throw new NotFoundException('Courses Not Found');
+    }
+  }
+
+  async sortCoursesByPriceLowToHigh(
+    page = 1,
+  ): Promise<{ courses: CourseEntity[]; totalCount: number }> {
+    try {
+      const [courses, totalCount] = await this.courseRepository.findAndCount({
+        take: 9,
+        skip: 9 * (page - 1),
+        select: ['id', 'course_title', 'description', 'imageUrl', 'price'],
+        order: { price: 'ASC' },
+      });
+      return { courses, totalCount };
+    } catch (error) {
+      throw new NotFoundException('Courses Not Found');
+    }
+  }
 }

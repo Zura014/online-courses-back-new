@@ -75,4 +75,26 @@ export class CourseController {
       console.error(error.message);
     }
   }
+
+  @Get('/high-to-low')
+  async sortCoursesByPriceHighToLow(
+    @Query('page') page: number,
+  ): Promise<{ courses: CourseEntity[]; totalCount: number }> {
+    try {
+      return await this.courseService.sortCoursesByPriceHighToLow(page);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+  @Get('/low-to-high')
+  async sortCoursesByPriceLowToHigh(
+    @Query('page') page: number,
+  ): Promise<{ courses: CourseEntity[]; totalCount: number }> {
+    try {
+      return await this.courseService.sortCoursesByPriceLowToHigh(page);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
 }
