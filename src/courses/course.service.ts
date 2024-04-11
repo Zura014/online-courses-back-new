@@ -50,7 +50,6 @@ export class CourseService {
         relations: { user: true },
       });
 
-      return;
       return { courses, totalCount };
     } catch (error) {
       throw new NotFoundException('Courses not found');
