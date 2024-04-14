@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { UserEntity } from 'src/auth/entities/user.entity';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { EditCourseDto } from './dto/edit-course.dto';
+import { CoursesFilterDto } from './dto/filter.dto';
 
 @Injectable()
 export class CourseService {
@@ -122,6 +123,23 @@ export class CourseService {
       return { courses, totalCount };
     } catch (error) {
       throw new NotFoundException('Courses Not Found');
+    }
+  }
+
+  async searchCourses(filterDto: CoursesFilterDto): Promise<CourseEntity[]> {
+    const { title } = filterDto;
+    const query = this.courseRepository.createQueryBuilder('course');
+
+    if (title) {
+      query.andWhere('course.course_title LIKE :title', {
+        title: `%${filterDto.title}%`,
+      });
+    }
+    const courses = await query.getMany();
+    try {
+      return courses;
+    } catch (error) {
+      console.error(error.message);
     }
   }
 }

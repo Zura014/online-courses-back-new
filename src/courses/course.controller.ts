@@ -16,6 +16,7 @@ import { CreateCourseDto } from './dto/create-course.dto';
 import { UserEntity } from 'src/auth/entities/user.entity';
 import { CourseEntity } from './entities/course.entity';
 import { EditCourseDto } from './dto/edit-course.dto';
+import { CoursesFilterDto } from './dto/filter.dto';
 
 @Controller('courses')
 export class CourseController {
@@ -93,6 +94,17 @@ export class CourseController {
   ): Promise<{ courses: CourseEntity[]; totalCount: number }> {
     try {
       return await this.courseService.sortCoursesByPriceLowToHigh(page);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+  @Get('/search')
+  async searchCourses(
+    @Body() filterDto: CoursesFilterDto,
+  ): Promise<CourseEntity[]> {
+    try {
+      return await this.courseService.searchCourses(filterDto);
     } catch (error) {
       console.error(error.message);
     }
