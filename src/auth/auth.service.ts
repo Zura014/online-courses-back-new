@@ -16,6 +16,8 @@ import { LoginDto } from './dto/login.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { EditUserDto } from './dto/edit-user.dto';
 import { CourseEntity } from 'src/courses/entities/course.entity';
+import { CreateRolesDto } from './dto/create-role.dto';
+import { UserRolesEntity } from './entities/user-roles.entity';
 
 @Injectable()
 export class AuthService {
@@ -25,6 +27,8 @@ export class AuthService {
     private jwtService: JwtService,
     @InjectRepository(CourseEntity)
     private readonly courseRepository: Repository<CourseEntity>,
+    @InjectRepository(UserRolesEntity)
+    private readonly rolesRepository: Repository<UserRolesEntity>,
   ) {}
 
   //SignUp (რეგისტრაცია)
@@ -164,6 +168,30 @@ export class AuthService {
       await this.userRepository.remove(user);
     } catch (error) {
       console.error(error.message);
+    }
+  }
+
+  async createRole(createRolesDto: CreateRolesDto): Promise<void> {
+    const { name } = createRolesDto;
+
+    const role = this.rolesRepository.create({
+      name,
+    });
+
+    try {
+      await this.rolesRepository.save(role);
+    } catch (error) {
+      if (error.code === 'ER_DUP_ENTRY') {
+        const { name } = createRolesDto;
+        const dup_role = await this.rolesRepository.findOne({
+          where: { name: name },
+        });
+
+        if (dup_role) {
+          throw new ConflictException('role name is already in use.');
+        }
+      }
+      throw error;
     }
   }
 }

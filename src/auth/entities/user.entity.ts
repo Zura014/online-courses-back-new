@@ -1,5 +1,12 @@
 import { CourseEntity } from 'src/courses/entities/course.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { UserRolesEntity } from './user-roles.entity';
 
 @Entity()
 export class UserEntity {
@@ -29,4 +36,7 @@ export class UserEntity {
 
   @OneToMany((_type) => CourseEntity, (course) => course.user)
   course: CourseEntity[];
+
+  @ManyToOne((_type) => UserRolesEntity, (role) => role.user)
+  role: number;
 }

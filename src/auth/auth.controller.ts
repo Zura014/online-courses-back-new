@@ -17,6 +17,8 @@ import { EditUserDto } from './dto/edit-user.dto';
 import { GetUser } from './decorators/get-user.decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUserDto } from './dto/get-user.dto';
+import { CreateRolesDto } from './dto/create-role.dto';
+import { UserRolesEntity } from './entities/user-roles.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -51,6 +53,15 @@ export class AuthController {
       return await this.authService.forgotPassword(forgotPasswordDto);
     } catch (error) {
       console.log(error.message);
+    }
+  }
+
+  @Post('/create-role')
+  async createRole(@Body() createRolesDto: CreateRolesDto): Promise<void> {
+    try {
+      return await this.authService.createRole(createRolesDto);
+    } catch (error) {
+      console.error(error.message);
     }
   }
 }

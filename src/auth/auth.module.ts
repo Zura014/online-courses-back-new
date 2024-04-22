@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { JwtStrategy } from './jwt.strategy';
 import { CourseEntity } from 'src/courses/entities/course.entity';
+import { UserRolesEntity } from './entities/user-roles.entity';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { CourseEntity } from 'src/courses/entities/course.entity';
         },
       }),
     }),
-    TypeOrmModule.forFeature([UserEntity, CourseEntity]),
+    TypeOrmModule.forFeature([UserEntity, CourseEntity, UserRolesEntity]),
   ],
   controllers: [AuthController, UserController],
   providers: [AuthService, JwtStrategy],
