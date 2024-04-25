@@ -34,7 +34,7 @@ export class AuthService {
   //SignUp (რეგისტრაცია)
 
   async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
-    const { email, password, username } = authCredentialsDto;
+    const { email, password, username, role } = authCredentialsDto;
 
     //hash
     const salt = await bcrypt.genSalt();
@@ -44,6 +44,7 @@ export class AuthService {
       email,
       username,
       password: hashedPassword,
+      role: role,
     });
     try {
       await this.userRepository.save(user);

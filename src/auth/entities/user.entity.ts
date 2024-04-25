@@ -37,6 +37,6 @@ export class UserEntity {
   @OneToMany((_type) => CourseEntity, (course) => course.user)
   course: CourseEntity[];
 
-  @ManyToOne((_type) => UserRolesEntity, (role) => role.user)
+  @ManyToOne((_type) => UserRolesEntity, (role) => role.id)
   role: number;
 }

@@ -1,3 +1,4 @@
+import { AdminModule } from './admin/admin.module';
 import { CourseController } from './courses/course.controller';
 import { CourseModule } from './courses/course.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -8,6 +9,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
+    AdminModule,
     ConfigModule.forRoot({
       envFilePath: [`.env.stage.${process.env.STAGE}`],
       validationSchema: configValidationSchema,

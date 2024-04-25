@@ -1,6 +1,7 @@
 import {
   IsEmail,
   IsNotEmpty,
+  IsNumber,
   IsString,
   Matches,
   MaxLength,
@@ -32,4 +33,7 @@ export class AuthCredentialsDto {
     message: 'The password is weak',
   })
   password: string;
+
+  @IsNotEmpty()
+  role: number;
 }
