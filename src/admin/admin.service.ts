@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRolesEntity } from 'src/auth/entities/user-roles.entity';
 import { UserEntity } from 'src/auth/entities/user.entity';
@@ -47,7 +51,29 @@ export class AdminService {
         );
       }
     } else {
-      throw new UnauthorizedException('You Cant Sign In');
+      throw new UnauthorizedException(`You Can't SignIn`);
+    }
+  }
+
+  async deleteUser(userId: number): Promise<void> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['course', 'role'],
+    });
+
+    if (!user) {
+      throw new BadRequestException(`Couldn't find User`);
+    }
+
+    if (user.role == 1) {
+      try {
+        await this.courseRepository.remove(user.course);
+        await this.userRepository.remove(user);
+      } catch (error) {
+        console.error(error.message);
+      }
+    } else {
+      throw new BadRequestException(`You Can't Use this Service`);
     }
   }
 }
