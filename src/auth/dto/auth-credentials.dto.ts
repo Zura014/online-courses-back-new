@@ -35,5 +35,8 @@ export class AuthCredentialsDto {
   password: string;
 
   @IsNotEmpty()
-  role: number;
+  role: {
+    id: number;
+    name: string;
+  };
 }

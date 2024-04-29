@@ -8,7 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
-import { AdminSignInDto } from './dto/signin.dto';
+import { AdminSignInDto } from './dto/admin-signin.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { UserEntity } from 'src/auth/entities/user.entity';
@@ -28,16 +28,16 @@ export class AdminController {
     }
   }
 
-  @UseGuards(AuthGuard())
-  @Delete('/delete-user/:id')
-  async deleteUser(
-    @Param('id') userId: number,
-    @GetUser() user: UserEntity,
-  ): Promise<void> {
-    try {
-      return await this.adminService.deleteUser(userId);
-    } catch (error) {
-      console.error(error.message);
-    }
-  }
+  // @UseGuards(AuthGuard())
+  // @Delete('/delete-user/:id')
+  // async deleteUser(
+  //   @Param('id') userId: number,
+  //   @GetUser() user: UserEntity,
+  // ): Promise<void> {
+  //   try {
+  //     return await this.adminService.deleteUser(userId);
+  //   } catch (error) {
+  //     console.error(error.message);
+  //   }
+  // }
 }

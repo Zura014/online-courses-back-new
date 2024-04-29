@@ -46,6 +46,7 @@ export class AuthService {
       password: hashedPassword,
       role: role,
     });
+
     try {
       await this.userRepository.save(user);
     } catch (error) {

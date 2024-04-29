@@ -11,7 +11,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtPayLoad } from '../auth/jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
-import { AdminSignInDto } from './dto/signin.dto';
+import { AdminSignInDto } from './dto/admin-signin.dto';
 import { AdminJwtPayLoad } from './admin-jwt-payload.interface';
 
 @Injectable()
@@ -27,13 +27,13 @@ export class AdminService {
   ) {}
 
   async signIn(signInDto: AdminSignInDto): Promise<{ accessToken: string }> {
-    const { username, password, role } = signInDto;
+    const { username, password, role1 } = signInDto;
     const user = await this.userRepository.findOne({
       where: { username },
-      relations: ['role'],
+      relations: { role: true },
     });
 
-    if (role == 1) {
+    if (role1 == user.role.id && role1 == 1) {
       if (user && (await bcrypt.compare(password, user.password))) {
         const payload: AdminJwtPayLoad = {
           username,
@@ -55,25 +55,25 @@ export class AdminService {
     }
   }
 
-  async deleteUser(userId: number): Promise<void> {
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-      relations: ['course', 'role'],
-    });
+  // async deleteUser(userId: number): Promise<void> {
+  //   const user = await this.userRepository.findOne({
+  //     where: { id: userId },
+  //     relations:
+  //   });
 
-    if (!user) {
-      throw new BadRequestException(`Couldn't find User`);
-    }
+  //   if (!user) {
+  //     throw new BadRequestException(`Couldn't find User`);
+  //   }
 
-    if (user.role == 1) {
-      try {
-        await this.courseRepository.remove(user.course);
-        await this.userRepository.remove(user);
-      } catch (error) {
-        console.error(error.message);
-      }
-    } else {
-      throw new BadRequestException(`You Can't Use this Service`);
-    }
-  }
+  //   if (user.role == 1) {
+  //     try {
+  //       await this.courseRepository.remove(user.course);
+  //       await this.userRepository.remove(user);
+  //     } catch (error) {
+  //       console.error(error.message);
+  //     }
+  //   } else {
+  //     throw new BadRequestException(`You Can't Use this Service`);
+  //   }
+  // }
 }

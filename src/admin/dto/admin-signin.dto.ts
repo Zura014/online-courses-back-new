@@ -8,5 +8,5 @@ export class AdminSignInDto {
   password: string;
 
   @IsNotEmpty()
-  role: number;
+  role1: number;
 }
