@@ -105,7 +105,7 @@ export class AuthService {
       const salt = await bcrypt.genSalt();
       const newHashedPassword = await bcrypt.hash(new_password, salt);
       try {
-        const updatedUser = await this.userRepository.update(user, {
+        const updatedUser = await this.userRepository.update(user.id, {
           password: newHashedPassword,
         });
         return updatedUser.raw;

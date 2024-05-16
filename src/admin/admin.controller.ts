@@ -32,10 +32,10 @@ export class AdminController {
   // @Delete('/delete-user/:id')
   // async deleteUser(
   //   @Param('id') userId: number,
-  //   @GetUser() user: UserEntity,
+  //   @GetUser() User: UserEntity,
   // ): Promise<void> {
   //   try {
-  //     return await this.adminService.deleteUser(userId);
+  //     return await this.adminService.deleteUser(userId, User);
   //   } catch (error) {
   //     console.error(error.message);
   //   }

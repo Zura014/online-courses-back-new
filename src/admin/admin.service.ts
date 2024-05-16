@@ -55,17 +55,17 @@ export class AdminService {
     }
   }
 
-  // async deleteUser(userId: number): Promise<void> {
+  // async deleteUser(userId: number, User: UserEntity): Promise<void> {
   //   const user = await this.userRepository.findOne({
   //     where: { id: userId },
-  //     relations:
+  //     relations: { role: true },
   //   });
 
   //   if (!user) {
   //     throw new BadRequestException(`Couldn't find User`);
   //   }
 
-  //   if (user.role == 1) {
+  //   if (User.role.id == 1) {
   //     try {
   //       await this.courseRepository.remove(user.course);
   //       await this.userRepository.remove(user);
