@@ -59,6 +59,7 @@ export class CourseService {
 
   async deleteCourse(id: number, user: UserEntity): Promise<void> {
     const course = await this.courseRepository.findOne({ where: { id: id } });
+
     if (!course) {
       throw new BadRequestException('Course was not found');
     }
@@ -138,6 +139,25 @@ export class CourseService {
     const courses = await query.getMany();
     try {
       return courses;
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+  async getMyCourse(
+    page = 1,
+    myuser: UserEntity,
+  ): Promise<{ myCourses: CourseEntity[]; totalCount: number }> {
+    const [myCourses, totalCount] = await this.courseRepository.findAndCount({
+      take: 9,
+      skip: 9 * (page - 1),
+      select: ['id', 'course_title', 'description', 'price', 'imageUrl'],
+      order: { id: 'DESC' },
+      where: { user: myuser },
+    });
+
+    try {
+      return { myCourses, totalCount };
     } catch (error) {
       console.error(error.message);
     }

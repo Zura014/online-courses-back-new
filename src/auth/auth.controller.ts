@@ -56,6 +56,7 @@ export class AuthController {
     }
   }
 
+  //Create Role (როლის დამატება)
   @Post('/create-role')
   async createRole(@Body() createRolesDto: CreateRolesDto): Promise<void> {
     try {
@@ -83,6 +84,7 @@ export class UserController {
     }
   }
 
+  // Profile page (პროფილის გვერდი)
   @UseGuards(AuthGuard())
   @Get('/profile')
   async getProfile(@GetUser() user: UserEntity): Promise<GetUserDto> {
@@ -102,6 +104,8 @@ export class UserController {
       console.error(error.message);
     }
   }
+
+  // Delete Account (ანგარიშის წაშლა)
   @UseGuards(AuthGuard())
   @Delete('/profile')
   async deleteUser(@GetUser() user: UserEntity): Promise<void> {

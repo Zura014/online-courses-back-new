@@ -77,6 +77,7 @@ export class CourseController {
     }
   }
 
+  // Filter by price high to low (ფილტრაცია ფასის მიხედვით მაღლიდან დაბლისკენ)
   @Get('/high-to-low')
   async sortCoursesByPriceHighToLow(
     @Query('page') page: number,
@@ -88,6 +89,7 @@ export class CourseController {
     }
   }
 
+  // Filter by price low to high (ფილტრაცია ფასის მიხედვით დაბლიდან მაღლისკენ)
   @Get('/low-to-high')
   async sortCoursesByPriceLowToHigh(
     @Query('page') page: number,
@@ -99,12 +101,27 @@ export class CourseController {
     }
   }
 
+  // Course Search (კუტსების ძიება სახელის მიხედვით)
   @Get('/search')
   async searchCourses(
     @Body() filterDto: CoursesFilterDto,
   ): Promise<CourseEntity[]> {
     try {
       return await this.courseService.searchCourses(filterDto);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+  // My Courses  საკუთარი კურსების მოძიება
+  @UseGuards(AuthGuard())
+  @Get('/mycourses')
+  async getMyCourse(
+    @Query('page') page: number,
+    @GetUser() user: UserEntity,
+  ): Promise<{ myCourses: CourseEntity[]; totalCount: number }> {
+    try {
+      return await this.courseService.getMyCourse(page, user);
     } catch (error) {
       console.error(error.message);
     }

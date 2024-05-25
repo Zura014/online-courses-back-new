@@ -17,6 +17,7 @@ import { UserEntity } from 'src/auth/entities/user.entity';
 export class AdminController {
   constructor(private adminService: AdminService) {}
 
+  // Admin signin (ადმინის ავტორიზაცია)
   @Post('/signin')
   async signIn(
     @Body() signInDto: AdminSignInDto,
