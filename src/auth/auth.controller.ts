@@ -7,6 +7,8 @@ import {
   Patch,
   Post,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { AuthService } from './auth.service';
@@ -19,6 +21,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { GetUserDto } from './dto/get-user.dto';
 import { CreateRolesDto } from './dto/create-role.dto';
 import { UserRolesEntity } from './entities/user-roles.entity';
+import { FileInterceptor } from '@nestjs/platform-express/multer';
 
 @Controller('auth')
 export class AuthController {
@@ -72,12 +75,17 @@ export class UserController {
   constructor(private authService: AuthService) {}
   // Edit User (მომხმარებლის რედაქტირება)
   @UseGuards(AuthGuard())
+  @UseInterceptors(FileInterceptor('image'))
   @Patch('/edit-user')
   async editUser(
+    @UploadedFile() file: Express.Multer.File,
     @Body() editUserDto: EditUserDto,
     @GetUser() user: UserEntity,
   ): Promise<UserEntity> {
     try {
+      if (file) {
+        editUserDto.imageUrl = file.path;
+      }
       return await this.authService.editUser(editUserDto, user);
     } catch (error) {
       console.error(error.message);

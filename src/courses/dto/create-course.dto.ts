@@ -19,6 +19,5 @@ export class CreateCourseDto {
   @IsNotEmpty()
   price: number;
 
-  @IsNotEmpty()
   imageUrl: string;
 }

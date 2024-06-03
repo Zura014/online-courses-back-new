@@ -21,5 +21,5 @@ export class CourseEntity {
   price: number;
 
   @Column()
-  imageUrl: string;
+  imageUrl?: string;
 }

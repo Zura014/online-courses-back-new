@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -7,7 +8,9 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { GetUser } from '.././auth/decorators/get-user.decorator';
 import { AuthGuard } from '@nestjs/passport';
@@ -17,6 +20,7 @@ import { UserEntity } from 'src/auth/entities/user.entity';
 import { CourseEntity } from './entities/course.entity';
 import { EditCourseDto } from './dto/edit-course.dto';
 import { CoursesFilterDto } from './dto/filter.dto';
+import { FileInterceptor } from '@nestjs/platform-express/multer';
 
 @Controller('courses')
 export class CourseController {
@@ -24,15 +28,25 @@ export class CourseController {
 
   //Create Course კურსის შექმნა
   @UseGuards(AuthGuard())
+  @UseInterceptors(FileInterceptor('imageUrl'))
   @Post('/create')
   async createCourse(
+    @UploadedFile() file: Express.Multer.File,
     @Body() createCourseDto: CreateCourseDto,
     @GetUser() user: UserEntity,
   ): Promise<CourseEntity> {
     try {
+      if (file) {
+        console.log('File received:', file);
+        createCourseDto.imageUrl = `/uploads/${file.filename}`;
+      } else {
+        throw new BadRequestException('Image file is required.');
+      }
+
       return await this.courseService.createCourse(createCourseDto, user);
     } catch (error) {
       console.error(error.message);
+      throw error;
     }
   }
 

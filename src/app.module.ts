@@ -6,6 +6,9 @@ import { AuthModule } from './auth/auth.module';
 import { Module } from '@nestjs/common';
 import { configValidationSchema } from 'config.schema';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MulterModule } from '@nestjs/platform-express/multer';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -31,6 +34,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     }),
     AuthModule,
     CourseModule,
+    MulterModule.register({
+      dest: './uploads',
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads',
+    }),
   ],
   controllers: [],
   providers: [],
