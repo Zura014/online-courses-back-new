@@ -140,4 +140,13 @@ export class CourseController {
       console.error(error.message);
     }
   }
+
+  @Get('/:id')
+  async getCourseById(@Param('id') id: number): Promise<CourseEntity> {
+    try {
+      return await this.courseService.GetCourseById(id);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
 }

@@ -162,4 +162,17 @@ export class CourseService {
       console.error(error.message);
     }
   }
+
+  async GetCourseById(id: number): Promise<CourseEntity> {
+    const course = await this.courseRepository.findOne({ where: { id: id } });
+    if (course) {
+      try {
+        return course;
+      } catch (error) {
+        console.error(error.message);
+      }
+    } else {
+      throw new BadRequestException(`Course doesn't exists`);
+    }
+  }
 }
