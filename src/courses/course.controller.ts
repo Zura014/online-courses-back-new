@@ -21,6 +21,7 @@ import { CourseEntity } from './entities/course.entity';
 import { EditCourseDto } from './dto/edit-course.dto';
 import { CoursesFilterDto } from './dto/filter.dto';
 import { FileInterceptor } from '@nestjs/platform-express/multer';
+import { GetCourseDto } from './dto/get-course.dto';
 
 @Controller('courses')
 export class CourseController {
@@ -142,9 +143,22 @@ export class CourseController {
   }
 
   @Get('/:id')
-  async getCourseById(@Param('id') id: number): Promise<CourseEntity> {
+  async getCourseById(@Param('id') id: number): Promise<GetCourseDto> {
+    const courseData = await this.courseService.GetCourseById(id);
+
+    const courseDto: GetCourseDto = {
+      id: courseData.id,
+      course_title: courseData.course_title,
+      description: courseData.description,
+      price: courseData.price,
+      imageUrl: courseData.imageUrl,
+      user: {
+        id: courseData.user.id,
+        username: courseData.user.username,
+      },
+    };
     try {
-      return await this.courseService.GetCourseById(id);
+      return courseDto;
     } catch (error) {
       console.error(error.message);
     }

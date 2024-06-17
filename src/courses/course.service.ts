@@ -164,7 +164,10 @@ export class CourseService {
   }
 
   async GetCourseById(id: number): Promise<CourseEntity> {
-    const course = await this.courseRepository.findOne({ where: { id: id } });
+    const course = await this.courseRepository.findOne({
+      where: { id: id },
+      relations: ['user'],
+    });
     if (course) {
       try {
         return course;
