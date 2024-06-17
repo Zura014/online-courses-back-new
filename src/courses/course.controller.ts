@@ -22,6 +22,8 @@ import { EditCourseDto } from './dto/edit-course.dto';
 import { CoursesFilterDto } from './dto/filter.dto';
 import { FileInterceptor } from '@nestjs/platform-express/multer';
 import { GetCourseDto } from './dto/get-course.dto';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 @Controller('courses')
 export class CourseController {
@@ -29,7 +31,21 @@ export class CourseController {
 
   //Create Course კურსის შექმნა
   @UseGuards(AuthGuard())
-  @UseInterceptors(FileInterceptor('imageUrl'))
+  @UseInterceptors(
+    FileInterceptor('imageUrl', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const extension = extname(file.originalname);
+          const filename = `${file.fieldname}-${uniqueSuffix}${extension}`;
+          console.log('Generated filename inside interceptor:', filename);
+          cb(null, filename);
+        },
+      }),
+    }),
+  )
   @Post('/create')
   async createCourse(
     @UploadedFile() file: Express.Multer.File,
@@ -37,9 +53,11 @@ export class CourseController {
     @GetUser() user: UserEntity,
   ): Promise<CourseEntity> {
     try {
+      console.log('Incoming DTO:', createCourseDto);
       if (file) {
         console.log('File received:', file);
         createCourseDto.imageUrl = `/uploads/${file.filename}`;
+        console.log('File path assigned:', createCourseDto.imageUrl);
       } else {
         throw new BadRequestException('Image file is required.');
       }

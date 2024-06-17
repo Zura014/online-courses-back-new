@@ -8,7 +8,8 @@ import { configValidationSchema } from 'config.schema';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MulterModule } from '@nestjs/platform-express/multer';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
+import { extname, join } from 'path';
+import { diskStorage } from 'multer';
 
 @Module({
   imports: [
@@ -35,7 +36,16 @@ import { join } from 'path';
     AuthModule,
     CourseModule,
     MulterModule.register({
-      dest: './uploads',
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          const filename = `${file.fieldname}-${uniqueSuffix}${ext}`;
+          console.log('Generated filename:', filename);
+        },
+      }),
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
