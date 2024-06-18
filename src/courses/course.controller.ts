@@ -4,6 +4,7 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
   Param,
   Patch,
   Post,
@@ -70,6 +71,7 @@ export class CourseController {
   }
 
   //Get Courses კურსების გვერდი
+  @Header('Access-Control-Allow-Origin', '*')
   @Get()
   async getCourses(
     @Query('page') page: number,

@@ -37,7 +37,7 @@ import { diskStorage } from 'multer';
     CourseModule,
     MulterModule.register({
       storage: diskStorage({
-        destination: './uploads',
+        destination: '../uploads',
         filename: (req, file, cb) => {
           const uniqueSuffix =
             Date.now() + '-' + Math.round(Math.random() * 1e9);
@@ -48,7 +48,7 @@ import { diskStorage } from 'multer';
       }),
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'uploads'),
+      rootPath: join(__dirname, '../', 'uploads'),
       serveRoot: '/uploads',
     }),
   ],
