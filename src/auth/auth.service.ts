@@ -70,7 +70,7 @@ export class AuthService {
           }
         }
       }
-      throw error; // Rethrow other errors
+      throw error;
     }
   }
 

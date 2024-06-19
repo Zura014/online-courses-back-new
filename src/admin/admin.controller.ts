@@ -25,7 +25,7 @@ export class AdminController {
     try {
       return await this.adminService.signIn(signInDto);
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 

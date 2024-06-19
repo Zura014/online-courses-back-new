@@ -56,9 +56,9 @@ export class CourseController {
     try {
       console.log('Incoming DTO:', createCourseDto);
       if (file) {
-        console.log('File received:', file);
+        // console.log('File received:', file);
         createCourseDto.imageUrl = `/uploads/${file.filename}`;
-        console.log('File path assigned:', createCourseDto.imageUrl);
+        // console.log('File path assigned:', createCourseDto.imageUrl);
       } else {
         throw new BadRequestException('Image file is required.');
       }
@@ -79,7 +79,7 @@ export class CourseController {
     try {
       return await this.courseService.getCourses(page);
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
@@ -93,7 +93,7 @@ export class CourseController {
     try {
       return await this.courseService.deleteCourse(id, user);
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
@@ -108,7 +108,7 @@ export class CourseController {
     try {
       return await this.courseService.editCourse(id, editCourseDto, user);
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
@@ -120,7 +120,7 @@ export class CourseController {
     try {
       return await this.courseService.sortCoursesByPriceHighToLow(page);
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
@@ -132,7 +132,7 @@ export class CourseController {
     try {
       return await this.courseService.sortCoursesByPriceLowToHigh(page);
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
@@ -144,7 +144,7 @@ export class CourseController {
     try {
       return await this.courseService.searchCourses(filterDto);
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
@@ -158,7 +158,7 @@ export class CourseController {
     try {
       return await this.courseService.getMyCourse(page, user);
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
@@ -180,7 +180,7 @@ export class CourseController {
     try {
       return courseDto;
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 }
