@@ -175,6 +175,9 @@ export class CourseController {
       user: {
         id: courseData.user.id,
         username: courseData.user.username,
+        description: courseData.user.description,
+        imageUrl: courseData.user.imageUrl,
+        status: courseData.user.status,
       },
     };
     try {

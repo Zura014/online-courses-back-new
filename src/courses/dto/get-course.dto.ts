@@ -12,5 +12,8 @@ export class GetCourseDto {
   user: {
     id: number;
     username: string;
+    description: string;
+    imageUrl: string;
+    status: string;
   };
 }
