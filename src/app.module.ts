@@ -1,15 +1,15 @@
-import { AdminModule } from './admin/admin.module';
-import { CourseController } from './courses/course.controller';
-import { CourseModule } from './courses/course.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AuthModule } from './auth/auth.module';
 import { Module } from '@nestjs/common';
-import { configValidationSchema } from 'config.schema';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MulterModule } from '@nestjs/platform-express/multer';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { extname, join } from 'path';
 import { diskStorage } from 'multer';
+
+import { AdminModule } from './admin/admin.module';
+import { CourseModule } from './courses/course.module';
+import { AuthModule } from './auth/auth.module';
+import { configValidationSchema } from 'config.schema';
 
 @Module({
   imports: [
@@ -37,18 +37,19 @@ import { diskStorage } from 'multer';
     CourseModule,
     MulterModule.register({
       storage: diskStorage({
-        destination: './dist/uploads',
+        destination: '../uploads',
         filename: (req, file, cb) => {
           const uniqueSuffix =
             Date.now() + '-' + Math.round(Math.random() * 1e9);
           const ext = extname(file.originalname);
           const filename = `${file.fieldname}-${uniqueSuffix}${ext}`;
           console.log('Generated filename:', filename);
+          cb(null, filename);
         },
       }),
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../', 'uploads'),
+      rootPath: join(__dirname, '../../uploads'),
       serveRoot: '/uploads',
     }),
   ],
