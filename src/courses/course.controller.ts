@@ -35,7 +35,7 @@ export class CourseController {
   @UseInterceptors(
     FileInterceptor('imageUrl', {
       storage: diskStorage({
-        destination: '../uploads',
+        destination: 'C:/Users/PC/online-courses-n/uploads',
         filename: (req, file, cb) => {
           const uniqueSuffix =
             Date.now() + '-' + Math.round(Math.random() * 1e9);
