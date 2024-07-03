@@ -33,7 +33,7 @@ export class AuthController {
     try {
       return await this.authService.signUp(authCredentialsDto);
     } catch (error) {
-      console.log(error.message);
+      throw error;
     }
   }
 
@@ -43,7 +43,7 @@ export class AuthController {
     try {
       return await this.authService.signIn(loginDto);
     } catch (error) {
-      console.log(error.message);
+      throw error;
     }
   }
 
@@ -55,7 +55,7 @@ export class AuthController {
     try {
       return await this.authService.forgotPassword(forgotPasswordDto);
     } catch (error) {
-      console.log(error.message);
+      throw error;
     }
   }
 
@@ -65,7 +65,7 @@ export class AuthController {
     try {
       return await this.authService.createRole(createRolesDto);
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 }
@@ -88,7 +88,7 @@ export class UserController {
       }
       return await this.authService.editUser(editUserDto, user);
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
@@ -109,7 +109,7 @@ export class UserController {
     try {
       return userDto;
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
@@ -122,7 +122,7 @@ export class UserController {
     try {
       return await this.authService.deleteUser(userId);
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 }

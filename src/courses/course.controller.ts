@@ -4,6 +4,7 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
   Param,
   Patch,
   Post,
@@ -21,6 +22,9 @@ import { CourseEntity } from './entities/course.entity';
 import { EditCourseDto } from './dto/edit-course.dto';
 import { CoursesFilterDto } from './dto/filter.dto';
 import { FileInterceptor } from '@nestjs/platform-express/multer';
+import { GetCourseDto } from './dto/get-course.dto';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 @Controller('courses')
 export class CourseController {
@@ -28,7 +32,21 @@ export class CourseController {
 
   //Create Course კურსის შექმნა
   @UseGuards(AuthGuard())
-  @UseInterceptors(FileInterceptor('imageUrl'))
+  @UseInterceptors(
+    FileInterceptor('imageUrl', {
+      storage: diskStorage({
+        destination: 'C:/Users/PC/online-courses-n/uploads',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const extension = extname(file.originalname);
+          const filename = `${file.fieldname}-${uniqueSuffix}${extension}`;
+          console.log('Generated filename inside interceptor:', filename);
+          cb(null, filename);
+        },
+      }),
+    }),
+  )
   @Post('/create')
   async createCourse(
     @UploadedFile() file: Express.Multer.File,
@@ -36,9 +54,11 @@ export class CourseController {
     @GetUser() user: UserEntity,
   ): Promise<CourseEntity> {
     try {
+      console.log('Incoming DTO:', createCourseDto);
       if (file) {
-        console.log('File received:', file);
+        // console.log('File received:', file);
         createCourseDto.imageUrl = `/uploads/${file.filename}`;
+        // console.log('File path assigned:', createCourseDto.imageUrl);
       } else {
         throw new BadRequestException('Image file is required.');
       }
@@ -51,6 +71,7 @@ export class CourseController {
   }
 
   //Get Courses კურსების გვერდი
+  @Header('Access-Control-Allow-Origin', '*')
   @Get()
   async getCourses(
     @Query('page') page: number,
@@ -58,7 +79,7 @@ export class CourseController {
     try {
       return await this.courseService.getCourses(page);
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
@@ -72,7 +93,7 @@ export class CourseController {
     try {
       return await this.courseService.deleteCourse(id, user);
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
@@ -87,7 +108,7 @@ export class CourseController {
     try {
       return await this.courseService.editCourse(id, editCourseDto, user);
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
@@ -99,7 +120,7 @@ export class CourseController {
     try {
       return await this.courseService.sortCoursesByPriceHighToLow(page);
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
@@ -111,7 +132,7 @@ export class CourseController {
     try {
       return await this.courseService.sortCoursesByPriceLowToHigh(page);
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
@@ -123,7 +144,7 @@ export class CourseController {
     try {
       return await this.courseService.searchCourses(filterDto);
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
@@ -137,16 +158,32 @@ export class CourseController {
     try {
       return await this.courseService.getMyCourse(page, user);
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 
   @Get('/:id')
-  async getCourseById(@Param('id') id: number): Promise<CourseEntity> {
+  async getCourseById(@Param('id') id: number): Promise<GetCourseDto> {
+    const courseData = await this.courseService.GetCourseById(id);
+
+    const courseDto: GetCourseDto = {
+      id: courseData.id,
+      course_title: courseData.course_title,
+      description: courseData.description,
+      price: courseData.price,
+      imageUrl: courseData.imageUrl,
+      user: {
+        id: courseData.user.id,
+        username: courseData.user.username,
+        description: courseData.user.description,
+        imageUrl: courseData.user.imageUrl,
+        status: courseData.user.status,
+      },
+    };
     try {
-      return await this.courseService.GetCourseById(id);
+      return courseDto;
     } catch (error) {
-      console.error(error.message);
+      throw error;
     }
   }
 }

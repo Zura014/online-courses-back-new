@@ -35,7 +35,24 @@ export class CourseService {
     try {
       return await this.courseRepository.save(course);
     } catch (error) {
-      console.error(error.message);
+      switch (error.errno) {
+        case 1452:
+          console.error(
+            'Foreign key constraint fails - The user does not exist.',
+          );
+          throw new Error(
+            'Foreign key constraint fails - The user does not exist.',
+          );
+
+        default:
+          console.error(
+            'An unexpected error occurred while saving the course:',
+            error.message,
+          );
+          throw new Error(
+            'An unexpected error occurred while saving the course.',
+          );
+      }
     }
   }
 
@@ -164,7 +181,10 @@ export class CourseService {
   }
 
   async GetCourseById(id: number): Promise<CourseEntity> {
-    const course = await this.courseRepository.findOne({ where: { id: id } });
+    const course = await this.courseRepository.findOne({
+      where: { id: id },
+      relations: ['user'],
+    });
     if (course) {
       try {
         return course;
