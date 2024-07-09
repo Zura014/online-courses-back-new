@@ -7,9 +7,6 @@ import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.int
 import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as fs from 'fs';
-import { diskStorage } from 'multer';
-import { ServeStaticModule } from '@nestjs/serve-static';
-
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
@@ -18,7 +15,7 @@ async function bootstrap() {
     next();
   });
 
-  const multerUploadsDir = join('C:/Users/PC/online-courses-n/uploads');
+  const multerUploadsDir = join('C:/Users/Zura/Code/Backend/forked-API/online-courses-back-new/uploads');
   if (!fs.existsSync(multerUploadsDir)) {
     console.error(
       `Multer uploads directory does not exist at path: ${multerUploadsDir}`,
